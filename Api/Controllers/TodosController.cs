@@ -1,26 +1,44 @@
-using Api.Db;
 using Api.Domain.Entities;
+using Api.UseCases.Todos.Commands;
+using Api.UseCases.Todos.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers;
 
-public class TodosController(AppDbContext context) : BaseApiController
+public class TodosController : BaseApiController
 {
     [HttpGet]
     public async Task<ActionResult<List<Todo>>> GetTodos()
     {
-        return await context.Todos.ToListAsync();
+        return await Mediator.Send(new GetTodos.Query());
     }
 
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Todo>> GetTodo(string id)
     {
-        var todo = await context.Todos.FindAsync(id);
+        return await Mediator.Send(new GetTodo.Query { Id = id });
+    }
 
-        if (todo == null) return NotFound();
+    [HttpPost]
+    public async Task<ActionResult<string>> CreateTodo(Todo todo)
+    {
+        return await Mediator.Send(new CreateTodo.Command { Todo = todo });
+    }
 
-        return todo;
+    [HttpPut]
+    public async Task<ActionResult> EditTodo(Todo todo)
+    {
+        await Mediator.Send(new EditTodo.Command { Todo = todo });
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteTodo(string id)
+    {
+        await Mediator.Send(new DeleteTodo.Command { Id = id });
+
+        return Ok();
     }
 }
