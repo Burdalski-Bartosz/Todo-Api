@@ -1,4 +1,5 @@
 using Api;
+using Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 // app.UseHttpsRedirection();
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000"));
 
 app.MapControllers();

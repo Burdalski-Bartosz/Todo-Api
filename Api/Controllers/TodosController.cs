@@ -18,28 +18,24 @@ public class TodosController : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Todo>> GetTodo(string id)
     {
-        return await Mediator.Send(new GetTodo.Query { Id = id });
+        return HandleResult(await Mediator.Send(new GetTodo.Query { Id = id }));
     }
 
     [HttpPost]
     public async Task<ActionResult<string>> CreateTodo(CreateTodoDto todoDto)
     {
-        return await Mediator.Send(new CreateTodo.Command { TodoDto = todoDto });
+        return HandleResult(await Mediator.Send(new CreateTodo.Command { TodoDto = todoDto }));
     }
 
     [HttpPut]
     public async Task<ActionResult> EditTodo(Todo todo)
     {
-        await Mediator.Send(new EditTodo.Command { Todo = todo });
-
-        return NoContent();
+        return HandleResult(await Mediator.Send(new EditTodo.Command { Todo = todo }));
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteTodo(string id)
     {
-        await Mediator.Send(new DeleteTodo.Command { Id = id });
-
-        return Ok();
+        return HandleResult(await Mediator.Send(new DeleteTodo.Command { Id = id }));
     }
 }

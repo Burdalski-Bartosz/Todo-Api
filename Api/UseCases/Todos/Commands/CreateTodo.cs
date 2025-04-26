@@ -1,3 +1,4 @@
+using Api.Core;
 using Api.Db;
 using Api.Domain.Entities;
 using Api.DTOs;
@@ -8,22 +9,25 @@ namespace Api.UseCases.Todos.Commands;
 
 public class CreateTodo
 {
-    public class Command : IRequest<string>
+    public class Command : IRequest<Result<string>>
     {
         public CreateTodoDto TodoDto { get; set; }
     }
 
     public class Handler(AppDbContext context, IMapper mapper)
-        : IRequestHandler<Command, string>
+        : IRequestHandler<Command, Result<string>>
     {
-        public async Task<string> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
         {
             var todo = mapper.Map<Todo>(request.TodoDto);
+
             context.Todos.Add(todo);
 
-            await context.SaveChangesAsync(cancellationToken);
+            var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
-            return todo.Id;
+            if (!result) return Result<string>.Failure("Failed to create", 400);
+
+            return Result<string>.Success(todo.Id);
         }
     }
 }

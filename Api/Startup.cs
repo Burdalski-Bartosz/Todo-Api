@@ -1,6 +1,7 @@
 using Api.Core;
 using Api.Db;
 using Api.Marker;
+using Api.Middleware;
 using Api.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,7 @@ public static class Startup
         );
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         services.AddValidatorsFromAssemblyContaining<CreateTodoValidator>();
+        services.AddTransient<ExceptionMiddleware>();
 
         return services;
     }
