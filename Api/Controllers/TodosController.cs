@@ -1,4 +1,5 @@
 using Api.Domain.Entities;
+using Api.DTOs;
 using Api.UseCases.Todos.Commands;
 using Api.UseCases.Todos.Queries;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,9 @@ public class TodosController : BaseApiController
     }
 
     [HttpPost]
-    public async Task<ActionResult<string>> CreateTodo(Todo todo)
+    public async Task<ActionResult<string>> CreateTodo(CreateTodoDto todoDto)
     {
-        return await Mediator.Send(new CreateTodo.Command { Todo = todo });
+        return await Mediator.Send(new CreateTodo.Command { TodoDto = todoDto });
     }
 
     [HttpPut]
