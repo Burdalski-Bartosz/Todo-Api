@@ -1,6 +1,8 @@
 using Api.Core;
 using Api.Db;
 using Api.Marker;
+using Api.Validators;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api;
@@ -21,9 +23,13 @@ public static class Startup
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddMediatR(x =>
-            x.RegisterServicesFromAssemblyContaining<ApplicationAssemblyMarker>()
+            {
+                x.RegisterServicesFromAssemblyContaining<ApplicationAssemblyMarker>();
+                x.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            }
         );
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+        services.AddValidatorsFromAssemblyContaining<CreateTodoValidator>();
 
         return services;
     }
