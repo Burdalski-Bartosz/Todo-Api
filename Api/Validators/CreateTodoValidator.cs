@@ -1,12 +1,11 @@
+using Api.DTOs;
 using Api.UseCases.Todos.Commands;
-using FluentValidation;
 
 namespace Api.Validators;
 
-public class CreateTodoValidator : AbstractValidator<CreateTodo.Command>
+public class CreateTodoValidator : BaseTodoValidator<CreateTodo.Command, CreateTodoDto>
 {
-    public CreateTodoValidator()
+    public CreateTodoValidator() : base(x => x.TodoDto)
     {
-        RuleFor(x => x.TodoDto.Title).NotEmpty().WithMessage("Title is required");
     }
 }

@@ -1,9 +1,11 @@
 using Api.Core;
 using Api.Db;
+using Api.Domain.Entities;
 using Api.Marker;
 using Api.Middleware;
 using Api.Validators;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api;
@@ -32,6 +34,9 @@ public static class Startup
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         services.AddValidatorsFromAssemblyContaining<CreateTodoValidator>();
         services.AddTransient<ExceptionMiddleware>();
+        services.AddIdentityApiEndpoints<User>(opt => { opt.User.RequireUniqueEmail = true; })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>();
 
         return services;
     }
@@ -54,8 +59,9 @@ public static class Startup
         try
         {
             var context = services.GetRequiredService<AppDbContext>();
+            var userManager = services.GetRequiredService<UserManager<User>>();
             await context.Database.MigrateAsync();
-            await Seed.SeedDatabase(context); // Używamy istniejącej klasy Seed
+            await Seed.SeedDatabase(context, userManager); // Używamy istniejącej klasy Seed
         }
         catch (Exception ex)
         {

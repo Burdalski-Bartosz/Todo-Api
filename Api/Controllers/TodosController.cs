@@ -2,6 +2,7 @@ using Api.Domain.Entities;
 using Api.DTOs;
 using Api.UseCases.Todos.Commands;
 using Api.UseCases.Todos.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -14,7 +15,7 @@ public class TodosController : BaseApiController
         return await Mediator.Send(new GetTodos.Query());
     }
 
-
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Todo>> GetTodo(string id)
     {
@@ -28,9 +29,9 @@ public class TodosController : BaseApiController
     }
 
     [HttpPut]
-    public async Task<ActionResult> EditTodo(Todo todo)
+    public async Task<ActionResult> EditTodo(EditTodoDto todo)
     {
-        return HandleResult(await Mediator.Send(new EditTodo.Command { Todo = todo }));
+        return HandleResult(await Mediator.Send(new EditTodo.Command { TodoDto = todo }));
     }
 
     [HttpDelete("{id}")]

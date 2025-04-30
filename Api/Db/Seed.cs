@@ -1,11 +1,41 @@
 using Api.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Api.Db;
 
 public class Seed
 {
-    public static async Task SeedDatabase(AppDbContext context)
+    public static async Task SeedDatabase(AppDbContext context, UserManager<User> userManager)
     {
+        var users = new List<User>
+        {
+            new()
+            {
+                Id = "admin-1",
+                Email = "admin1@admin.com",
+                UserName = "admin1@admin1.com"
+            },
+            new()
+            {
+                Id = "admin-2",
+                Email = "admin2@admin.com",
+                UserName = "admin2@admin2.com"
+            },
+            new()
+            {
+                Id = "admin-3",
+                Email = "admin3@admin.com",
+                UserName = "admin3@admin3.com"
+            }
+        };
+
+        if (!userManager.Users.Any())
+            foreach (var user in users)
+            {
+                Console.WriteLine(user.UserName);
+                await userManager.CreateAsync(user, "Admin123!!");
+            }
+
         if (context.Todos.Any()) return;
 
         var todos = new List<Todo>

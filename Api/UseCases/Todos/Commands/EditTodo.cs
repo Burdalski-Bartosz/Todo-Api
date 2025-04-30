@@ -1,6 +1,6 @@
 using Api.Core;
 using Api.Db;
-using Api.Domain.Entities;
+using Api.DTOs;
 using AutoMapper;
 using MediatR;
 
@@ -10,18 +10,18 @@ public class EditTodo
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public required Todo Todo { get; set; }
+        public required EditTodoDto TodoDto { get; set; }
     }
 
     public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Command, Result<Unit>>
     {
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var todo = await context.Todos.FindAsync([request.Todo.Id], cancellationToken);
+            var todo = await context.Todos.FindAsync([request.TodoDto.Id], cancellationToken);
 
             if (todo == null) return Result<Unit>.Failure("Todo not found", 404);
 
-            mapper.Map(request.Todo, todo);
+            mapper.Map(request.TodoDto, todo);
 
             var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
