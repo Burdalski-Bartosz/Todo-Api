@@ -5,7 +5,9 @@ using Api.Marker;
 using Api.Middleware;
 using Api.Validators;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api;
@@ -43,7 +45,11 @@ public static class Startup
 
     public static IServiceCollection AddWebUiServices(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers(opt =>
+        {
+            var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+            opt.Filters.Add(new AuthorizeFilter(policy));
+        });
         services.AddCors(); // Konfigurację CORS można też przenieść lub zostawić w Program.cs
         services.AddOpenApi(); // Zakładając, że AddOpenApi to Twoja metoda lub z biblioteki
         // services.AddEndpointsApiExplorer(); // Standardowa rejestracja dla Swaggera

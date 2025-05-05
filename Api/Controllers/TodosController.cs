@@ -2,7 +2,6 @@ using Api.Domain.Entities;
 using Api.DTOs;
 using Api.UseCases.Todos.Commands;
 using Api.UseCases.Todos.Queries;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -15,7 +14,6 @@ public class TodosController : BaseApiController
         return await Mediator.Send(new GetTodos.Query());
     }
 
-    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Todo>> GetTodo(string id)
     {
