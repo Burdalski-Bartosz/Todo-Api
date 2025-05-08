@@ -12,8 +12,6 @@ public class AccountController(SignInManager<User> signInManager) : BaseApiContr
     [HttpPost("register")]
     public async Task<ActionResult> RegisterUser(RegisterDto registerDto)
     {
-        Console.WriteLine(registerDto);
-        Console.WriteLine("TEST");
         var user = new User
         {
             UserName = registerDto.Email,
